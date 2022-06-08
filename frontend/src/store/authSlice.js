@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { fetchSettings, saveSettings } from "../utils/firebase";
+import { fetchMyBlockers, fetchSettings, saveSettings } from "../utils/firebase";
 
 
 export const blockUser = createAsyncThunk('auth/blockUser', (data, action) => {
@@ -16,6 +16,14 @@ export const fetchBlocked = createAsyncThunk('auth/fetchBlocked', (user) => {
     })
 })
 
+export const fetchBlockers = createAsyncThunk('auth/fetchBlockers', (user, action) => {
+    const currentUser = action.getState().auth.currentUser;
+    return fetchMyBlockers(currentUser).then(results => {
+        return results.docs ? results.docs.map(doc => doc.data().owner) : []
+    })
+})
+
+
 const removeFromArray = (arr, value) => {
     for (var i = 0; i < arr.length; i++) {
         if (arr[i] === value) {
@@ -29,14 +37,17 @@ const authSlice = createSlice({
     name: 'auth',
     initialState: {
         currentUser: {},
-        blocked: [
-
-        ],
-        loading: false
+        blocked: [],
+        blockedMe: [],
+        loading: false,
+        notify: false
     },
     reducers: {
         setUser(state, action) {
             state.currentUser = action.payload
+        },
+        removeNotify(state, action) {
+            state.notify = false
         }
     },
     extraReducers: builder => {
@@ -50,13 +61,17 @@ const authSlice = createSlice({
                 }
             }
             state.loading = false
+            state.notify = true
         });
         builder.addCase(blockUser.pending, (state) => {
             state.loading = true
         });
         builder.addCase(fetchBlocked.fulfilled, (state, action) => {
             state.blocked = action.payload
-        })
+        });
+        builder.addCase(fetchBlockers.fulfilled, (state, action) => {
+            state.blockedMe = action.payload
+        });
     }
 })
 

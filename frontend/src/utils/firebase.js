@@ -41,6 +41,17 @@ export const fetchSettings = (currentUser) => {
     }
 }
 
+export const fetchMyBlockers = (currentUser) => {
+    try {
+        const currentUserId = currentUser.sub || currentUser.user_id;
+        return getDocs(query(collection(db, 'blocked'),
+            where('blocked', '==', currentUserId)
+        ))
+    } catch (error) {
+        console.log('error fetching settings', error)
+    }
+}
+
 export const saveSettings = (currentUser, data) => {
     try {
         const blocked = data.user;

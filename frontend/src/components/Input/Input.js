@@ -10,9 +10,13 @@ import chatSlice, {storeChat} from '../../store/chatSlice';
 const Input = ({ socket }) => {
     const selectedUser = useSelector(state => state.chat.selectedUser);
     const currentUser = useSelector(state => state.auth.currentUser);
+    const blockedMe = useSelector(state => state.auth.blocked);
     const dispatch = useDispatch();
     // const [message, setMessage] = useState('');
     const navigate = useNavigate();
+
+    const selectedUserId = selectedUser.sub || selectedUser.user_id;
+    const blocked = blockedMe.filter(id => selectedUserId === id).length > 0;
 
     useEffect(() => {
         if (Object.keys(currentUser).length === 0) {
@@ -43,8 +47,8 @@ const Input = ({ socket }) => {
     }
 
     return <form className="form" onSubmit={handleSubmit}>
-        <input disabled={Object.keys(selectedUser).length === 0} type="text" placeholder='Type a message' className="form__input" />
-        <button disabled={Object.keys(selectedUser).length === 0} type='submit' className="form__submit">Send</button>
+        <input disabled={Object.keys(selectedUser).length === 0 || blocked} type="text" placeholder='Type a message' className="form__input" />
+        <button disabled={Object.keys(selectedUser).length === 0 || blocked} type='submit' className="form__submit">Send</button>
     </form>
 }
 

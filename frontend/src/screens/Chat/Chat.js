@@ -8,7 +8,7 @@ import { setSelectedUser } from '../../store/chatSlice';
 import CurrentUser from '../../components/CurrentUser/CurrentUser';
 import { Auth0Provider, useAuth0, User } from "@auth0/auth0-react";
 import config from '../../utils/config';
-import { fetchBlocked } from '../../store/authSlice';
+import authSlice, { fetchBlocked, fetchBlockers } from '../../store/authSlice';
 
 
 class Chat extends Component {
@@ -29,6 +29,9 @@ class Chat extends Component {
         this.socket.on('disconnect', data => {
             // alert('user disconnected on frontend')
         })
+        this.socket.on('user-settings', data => {
+            this.props.fetchBlockers(currentUser)
+        })
     }
 
     render() {
@@ -38,11 +41,17 @@ class Chat extends Component {
             // navigate('/chat');
         };
 
-        const { currentUser, selectedUser, setSelectedUser, fetchBlocked } = this.props;
+        const { currentUser, selectedUser, setSelectedUser, fetchBlocked, notify, disableNotify, fetchBlockers } = this.props;
         fetchBlocked(currentUser);
+        fetchBlockers();
         console.log('currentUser', currentUser);
         if (selectedUser) {
             setSelectedUser(selectedUser)
+        }
+
+        if (notify) {
+            this.socket.emit('user-blocked');
+            disableNotify()
         }
 
         return (
@@ -67,7 +76,9 @@ class Chat extends Component {
 const mapDispatchToProps = (dispatch) => {
     return {
         setSelectedUser: (user) => dispatch(setSelectedUser(user)),
-        fetchBlocked: (user) => dispatch(fetchBlocked(user))
+        fetchBlocked: (user) => dispatch(fetchBlocked(user)),
+        fetchBlockers: () => dispatch(fetchBlockers('')),
+        disableNotify: ()=> dispatch(authSlice.actions.removeNotify())
     }
 }
 
@@ -76,6 +87,7 @@ const mapStateToProps = (state, props) => {
     return {
         currentUser: state.auth.currentUser,
         selectedUser: state.chat.selectedUser,
+        notify: state.auth.notify,
         ...props
     }
 }

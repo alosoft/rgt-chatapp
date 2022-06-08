@@ -27,6 +27,10 @@ io.on('connection', (socket) => {
         console.log('waving.....', message)
         socket.broadcast.emit('user-online', message)
     })
+    socket.on('user-blocked', message => {
+        console.log('a user was blocked=============')
+        socket.broadcast.emit('user-settings')
+    })
     socket.broadcast.emit('user-online', socket.request._query)
 });
 

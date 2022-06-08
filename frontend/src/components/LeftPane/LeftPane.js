@@ -63,12 +63,19 @@ class LeftPane extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
+  const blockedMe = state.auth.blockedMe;
+  const onlineUsers = state.chat.onlineUsers;
+  const filtered = _.filter(onlineUsers, user => {
+    const user_id = user.user_id || user.sub;
+    return !_.includes(blockedMe, user_id)
+  });
   return {
     ...ownProps,
     currentUser: state.auth.currentUser,
     users: state.users.users,
     isLoading: state.users.loading,
-    onlineUsers: state.chat.onlineUsers
+    onlineUsers: filtered,
+    blockedMe: state.auth.blockedMe
   }
 }
 

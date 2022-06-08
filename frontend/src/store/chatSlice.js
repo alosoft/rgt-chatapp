@@ -57,6 +57,14 @@ const chatSlice = createSlice({
         setOnlineUser(state, action) {
             state.onlineUsers.push(action.payload)
             localStorage.setItem('ONLINE_USERS', JSON.stringify([...state.onlineUsers]))
+        },
+        blockedChat(state, action) {
+            const blockedUserId = action.payload
+            const selectedUserId = state.selectedUser.user_id || state.selectedUser.sub;
+            if (selectedUserId === blockedUserId) {
+                localStorage.removeItem('SELECTED_USER')
+                state.selectedUser = {}
+            }
         }
     },
     extraReducers: builder => {
