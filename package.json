@@ -10,10 +10,10 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "concurrently": "^7.2.1",
     "dotenv": "^16.0.1"
   },
   "dependencies": {
+    "concurrently": "^7.2.1",
     "redux-persist": "^6.0.0"
   }
 }
