@@ -9,7 +9,7 @@ import { Provider } from 'react-redux';
 import store from './store/store';
 import { PersistGate } from 'redux-persist/integration/react'
 import { persistStore } from 'redux-persist'
-import app, {saveSettings} from './utils/firebase';
+import app, { saveSettings } from './utils/firebase';
 
 
 let persist = persistStore(store);
@@ -33,3 +33,5 @@ root.render(
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
+
+console.log('env===>', process.env)

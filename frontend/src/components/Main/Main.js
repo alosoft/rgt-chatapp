@@ -26,7 +26,7 @@ class Main extends Component {
             <div className='main'>
                 <div className="main__header">
                     {selectedUser ?
-                        <UserCard user={selectedUser} />
+                        <UserCard profile={true} user={selectedUser} />
                         : null}
                 </div>
                 <div className="main__chat">

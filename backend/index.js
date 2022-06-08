@@ -1,10 +1,12 @@
-const config = require('./auth');
-const { auth } = require('express-openid-connect');
 const express = require('express');
 const app = express();
 const http = require('http');
 const server = http.createServer(app);
 const socketio = require("socket.io");
+
+if (process.env.NODE_ENV !== 'production') {
+    require('dotenv').config();
+}
 
 const io = socketio(server, {
     cors: {
@@ -18,17 +20,13 @@ app.get('/', (req, res) => {
 });
 
 io.on('connection', (socket) => {
-    // console.log(socket)
-    // console.log('a user connected', socket.request._query);
     socket.on('send-chat-message', message => {
         socket.broadcast.emit('chat-message', message)
     })
     socket.on('user-wave', message => {
-        console.log('waving.....', message)
         socket.broadcast.emit('user-online', message)
     })
     socket.on('user-blocked', message => {
-        console.log('a user was blocked=============')
         socket.broadcast.emit('user-settings')
     })
     socket.broadcast.emit('user-online', socket.request._query)
@@ -38,6 +36,6 @@ io.on('disconnect', socket => {
     console.log('a user disconnected')
 })
 
-server.listen(5000, () => {
+server.listen(process.env.PORT || 5000, () => {
     console.log('listening on *:5000');
 });

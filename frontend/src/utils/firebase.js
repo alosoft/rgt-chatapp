@@ -8,7 +8,7 @@ import _ from 'lodash'
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-    apiKey: "AIzaSyBfKtmAbTIIbNcljhbrBmNYYH9Rg8HkoNU",
+    apiKey: process.env.FIREBASE_API_KEY,
     authDomain: "rgt-chat-app-a57ae.firebaseapp.com",
     projectId: "rgt-chat-app-a57ae",
     storageBucket: "rgt-chat-app-a57ae.appspot.com",

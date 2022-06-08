@@ -4,7 +4,7 @@ import './UserCard.css';
 import chatSlice, { setSelectedUser } from '../../store/chatSlice'
 import { blockUser } from '../../store/authSlice';
 
-const UserCard = ({ user }) => {
+const UserCard = ({ user, profile }) => {
     const dispatch = useDispatch();
     const loading = useSelector(state => state.auth.loading)
     const blockedUserIds = useSelector(state => state.auth.blocked)
@@ -29,9 +29,13 @@ const UserCard = ({ user }) => {
             <p className="usercard__profile-name">{user.name}</p>
             <p className="usercard__profile-desc">Last Login: {new Date(user.last_login).toUTCString()}</p>
         </div>
-        {loading ? <p>Loading.....</p>
-            :
-            <button className="usercard__block" onClick={handleBlock}>{ blocked ? 'Unblock' : 'Block' } </button>
+        {
+            profile ?
+                null
+                :
+                <button disabled={loading} className="usercard__block" onClick={handleBlock}>
+                    {loading ? 'Saving....' : blocked ? 'Unblock' : 'Block'}
+                </button>
         }
     </div>
 }
